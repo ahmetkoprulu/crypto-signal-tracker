@@ -1,10 +1,11 @@
 import { Router } from "express";
 import signal from "./routes/signal";
+import formula from "./routes/formula";
 
-// guaranteed to get dependencies
 export default () => {
   const app = Router();
   signal(app);
+  formula(app);
 
   return app;
 };
