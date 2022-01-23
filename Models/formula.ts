@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
 export interface Formula {
-  equation: Array<string>;
+  _id: string;
+  equation: string;
   pairs: Array<string>;
   createdAt: Date;
   updatedAt: Date;

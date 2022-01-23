@@ -8,7 +8,7 @@ export default class FormulaService
 {
   formula = "MIDA - 1 > 0";
 
-  public async addFormula(model: Formula): Promise<ServiceReturn<null>> {
+  public async createFormula(model: Formula): Promise<ServiceReturn<null>> {
     try {
       var entity = new FormulaModel({
         equation: model.equation,
@@ -32,13 +32,47 @@ export default class FormulaService
 
       return this.Success(list, "Formulas listed successfully.");
     } catch (err: unknown) {
-      let list: Formula[] = [];
-
       if (err instanceof Error) {
-        return this.Error(list, err.message);
+        return this.Error([], err.message);
       }
 
-      return this.Error(list, "Something went wrong");
+      return this.Error([], "Something went wrong");
+    }
+  }
+
+  public async updateFormula(model: Formula): Promise<ServiceReturn<null>> {
+    try {
+      var formula = await FormulaModel.findOne({ _id: model._id });
+      if (formula == null) return this.NotFound("Formula Not Found");
+
+      formula.equation = model.equation;
+      formula.pairs = model.pairs;
+
+      formula.update();
+
+      return this.Success(null, "Formula updated successfully");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return this.Error(null, err.message);
+      }
+
+      return this.Error(null, "Something went wrong");
+    }
+  }
+
+  public async deleteFormula(id: string): Promise<ServiceReturn<null>> {
+    try {
+      await FormulaModel.deleteOne({
+        _id: id,
+      });
+
+      return this.Success(null, "Formula deleted successfully.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return this.Error(null, err.message);
+      }
+
+      return this.Error(null, "Something went wrong");
     }
   }
   //   public getDistinctVariables(): ServiceReturn {}
@@ -47,8 +81,10 @@ export default class FormulaService
 }
 
 export interface IFormulaService {
-  addFormula(model: Formula): Promise<ServiceReturn<null>>;
+  createFormula(model: Formula): Promise<ServiceReturn<null>>;
   listFormulas(): Promise<ServiceReturn<Formula[]>>;
+  updateFormula(model: Formula): Promise<ServiceReturn<null>>;
+  deleteFormula(id: string): Promise<ServiceReturn<null>>;
   //   executeFormula(): ServiceReturn;
   //   getDistinctVariables(): ServiceReturn;
 }
