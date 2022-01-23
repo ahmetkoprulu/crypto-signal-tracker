@@ -1,4 +1,4 @@
-import { Formula } from "@/Models/formula";
+import { Formula } from "../../Models/formula";
 import { Router, Request, Response, NextFunction } from "express";
 import { Logger } from "winston";
 import FormulaService from "../../Services/formula";

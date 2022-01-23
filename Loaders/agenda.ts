@@ -3,14 +3,24 @@ import { Db } from "mongodb";
 import config from "../Config";
 
 export default (mongoConnection: Db) => {
-  return new Agenda({
+  var agenda = new Agenda({
     mongo: mongoConnection,
     db: { collection: config.agenda.dbCollection },
-    processEvery: config.agenda.pooltime,
     maxConcurrency: config.agenda.concurrency,
   } as AgendaConfig);
-  /**
-   * This voodoo magic is proper from agenda.js so I'm not gonna explain too much here.
-   * https://github.com/agenda/agenda#mongomongoclientinstance
-   */
+
+  agenda.on("start", (job) => {
+    console.log(`Job <${job.attrs.name}> starting`);
+  });
+  agenda.on("success", (job) => {
+    console.log(`Job <${job.attrs.name}> succeeded`);
+  });
+  agenda.on("fail", (error, job) => {
+    console.log(`Job <${job.attrs.name}> failed:`, error);
+  });
+
+  agenda.processEvery("1 second");
+  agenda.start();
+
+  return agenda;
 };

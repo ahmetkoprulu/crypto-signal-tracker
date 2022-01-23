@@ -4,6 +4,7 @@ import logger from "./Loaders/logger";
 import expressLoader from "./Loaders/express";
 import mongoLoader from "./Loaders/mongo";
 import agendaLoader from "./Loaders/agenda";
+import jobsLoader from "./Loaders/jobs";
 
 async function startServer() {
   const app = express();
@@ -11,8 +12,11 @@ async function startServer() {
   let db = await mongoLoader();
   logger.info("✌️ DB loaded and connected!");
 
-  agendaLoader(db);
+  var agenda = agendaLoader(db);
   logger.info("✌️ Agenda loaded successfully!");
+
+  await jobsLoader({ agenda });
+  logger.info("✌️ Jobs loaded");
 
   await expressLoader({ app: app });
   logger.info("✌️ Express loaded successfully!");

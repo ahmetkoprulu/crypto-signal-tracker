@@ -1,6 +1,7 @@
 import FormulaModel, { Formula } from "../Models/formula";
 import ServiceBase from "./Base/ServiceBase";
 import ServiceReturn from "./Base/ServiceReturn";
+import { addOrUpdateToArrayValue } from "../Common/helpers";
 
 export default class FormulaService
   extends ServiceBase
@@ -75,7 +76,44 @@ export default class FormulaService
       return this.Error(null, "Something went wrong");
     }
   }
-  //   public getDistinctVariables(): ServiceReturn {}
+
+  public async getIndicators(): Promise<
+    ServiceReturn<Map<string, Array<string>>>
+  > {
+    const regex = /[a-zA-Z]+/gi;
+    let m;
+    const indicators = new Map<string, Array<string>>();
+    try {
+      var list: Formula[] = await FormulaModel.find({});
+
+      list.forEach((x) => {
+        while ((m = regex.exec(x.equation)) !== null) {
+          if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+          }
+
+          m.forEach((match) => {
+            x.pairs.forEach((y) => {
+              addOrUpdateToArrayValue(indicators, match, y);
+            });
+          });
+        }
+      });
+      console.log(indicators);
+
+      return this.Success(indicators, "");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return this.Error(new Map<string, Array<string>>(), err.message);
+      }
+
+      return this.Error(
+        new Map<string, Array<string>>(),
+        "Something went wrong"
+      );
+    }
+  }
+
   //   private replaceVariables() {}
   //   public executeFormula(): ServiceReturn {}
 }
@@ -85,6 +123,6 @@ export interface IFormulaService {
   listFormulas(): Promise<ServiceReturn<Formula[]>>;
   updateFormula(model: Formula): Promise<ServiceReturn<null>>;
   deleteFormula(id: string): Promise<ServiceReturn<null>>;
+  getIndicators(): Promise<ServiceReturn<Map<string, Array<string>>>>;
   //   executeFormula(): ServiceReturn;
-  //   getDistinctVariables(): ServiceReturn;
 }
