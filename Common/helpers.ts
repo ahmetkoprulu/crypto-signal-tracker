@@ -15,3 +15,7 @@ export function addOrUpdateToArrayValue<T, Y>(
 
   exist.push(value);
 }
+
+export function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

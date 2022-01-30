@@ -1,4 +1,4 @@
-import axios, { Method } from "axios";
+import axios, { Method, AxiosResponse } from "axios";
 
 axios.defaults.baseURL = "https://api.twelvedata.com";
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -52,7 +52,13 @@ class RequestEndPoint implements IRequestBase {
     return this;
   }
 
-  async request() {
+  output(size: number) {
+    this.params.outputsize = size;
+
+    return this;
+  }
+
+  async request(): Promise<AxiosResponse<any, any>> {
     console.log(this.url, this.method);
     return axios.request({
       url: this.url,

@@ -1,0 +1,21 @@
+- Complete formula CRUD
+
+Add validation for endpoints(Joi)
+
+- Add job for fetching required indicators after calculated needed ones.
+
+- schedule jobs in order to not exceed 8 request per minute limit.
+
+- Cache indicators for same reason aswell.
+
+Implement calculation logic.
+
+Add authentication.
+
+social login.
+
+Implement diffirent ways to sent alert.
+
+Discord Integration (update discord bot aswell)(Webhooks maybe)
+
+(Optional) Add complex data type for twelvedata wrapper if needed.

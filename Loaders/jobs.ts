@@ -16,5 +16,5 @@ export default async ({ agenda }: { agenda: Agenda }) => {
     FetchIndicatorsJob
   );
 
-  await agenda.every("1 minute", "execute-formulas");
+  await agenda.every("1 minute", "fetch-indicators");
 };
