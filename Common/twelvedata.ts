@@ -58,9 +58,9 @@ class RequestEndPoint implements IRequestBase {
     return this;
   }
 
-  async request(): Promise<AxiosResponse<any, any>> {
+  async request<T = any>(): Promise<AxiosResponse<T, any>> {
     console.log(this.url, this.method);
-    return axios.request({
+    return axios.request<T>({
       url: this.url,
       method: this.method,
       params: this.params,
