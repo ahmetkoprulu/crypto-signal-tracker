@@ -19,3 +19,21 @@ export function addOrUpdateToArrayValue<T, Y>(
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export function replaceIndicators(
+  formula: string,
+  handler: (indicator: string) => string
+): string {
+  var regex = /(\S[a-zA-Z]+)/gm;
+  formula.replace(regex, handler);
+
+  return formula;
+}
+
+export function evaluateCondition(condition: string): boolean {
+  return eval(condition);
+}
+
+export function objectToMap(o: any) {
+  return new Map(Object.entries(o));
+}

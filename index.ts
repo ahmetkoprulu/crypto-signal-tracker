@@ -5,6 +5,8 @@ import expressLoader from "./Loaders/express";
 import mongoLoader from "./Loaders/mongo";
 import agendaLoader from "./Loaders/agenda";
 import jobsLoader from "./Loaders/jobs";
+import Twelvedata from "./Common/twelvedata";
+import TwelvedataResult from "./Models/twelvedataResult";
 
 async function startServer() {
   const app = express();
@@ -20,6 +22,15 @@ async function startServer() {
 
   await expressLoader({ app: app });
   logger.info("✌️ Express loaded successfully!");
+
+  let response = await Twelvedata.requestFinancialData()
+    .technicalAnalysis("macd")
+    .batchRequest(["BTC/ETH", "ETH/BTC"])
+    .interval("1min")
+    .output(3)
+    .request<Map<string, TwelvedataResult>>();
+
+  console.log(response.data);
 
   await app
     .listen(config.port, () => {

@@ -4,8 +4,10 @@ import Twelvedata from "../Common/twelvedata";
 import MemoryCache from "../Common/Cache/MemoryCache";
 import ICache from "../Common/Cache/ICache";
 import { delay } from "../Common/helpers";
-export default async function FetchFormula(job: any): Promise<void> {
-  Logger.debug("✌️ Formula Execution Job is triggered!");
+import TwelvedataResult from "@/Models/twelvedataResult";
+
+export default async function FetchIndicators(job: any): Promise<void> {
+  Logger.debug("✌️ Fetch Indicators Job is triggered!");
   var cache: ICache = new MemoryCache();
 
   try {
@@ -14,7 +16,7 @@ export default async function FetchFormula(job: any): Promise<void> {
 
     if (!DTO.isSucess) {
       Logger.error(
-        "🔥 Error with Formula Execution Job: Could not fetch indicators."
+        "🔥 Error with Fetching indicators Job: Could not fetch indicators."
       );
 
       return;
@@ -28,7 +30,7 @@ export default async function FetchFormula(job: any): Promise<void> {
       await fetch(key, value);
     }
   } catch (e) {
-    Logger.error("🔥 Error with Formula Execution Job: %o", e);
+    Logger.error("🔥 Error with Fetching indicators Job: %o", e);
   }
 
   async function sliceAndFetch(indicators: Map<string, string[]>) {
@@ -41,7 +43,7 @@ export default async function FetchFormula(job: any): Promise<void> {
         await fetch(indicator, indicators.get(indicator)!);
       }
 
-      await delay(2 * 1000);
+      await delay(2 * 1500);
     }
   }
 

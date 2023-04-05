@@ -1,4 +1,4 @@
-import FormulaModel, { Formula } from "../Models/formula";
+import FormulaModel, { Formula } from "../Models/database/formula";
 import ServiceBase from "./Base/ServiceBase";
 import ServiceReturn from "./Base/ServiceReturn";
 import { addOrUpdateToArrayValue } from "../Common/helpers";
@@ -12,7 +12,7 @@ export default class FormulaService
   public async createFormula(model: Formula): Promise<ServiceReturn<null>> {
     try {
       var entity = new FormulaModel({
-        equation: model.equation,
+        equation: model.conditions,
         pairs: model.pairs,
       });
       await entity.save();
@@ -46,7 +46,7 @@ export default class FormulaService
       var formula = await FormulaModel.findOne({ _id: model._id });
       if (formula == null) return this.NotFound("Formula Not Found");
 
-      formula.equation = model.equation;
+      formula.conditions = model.conditions;
       formula.pairs = model.pairs;
 
       formula.update();
@@ -87,17 +87,19 @@ export default class FormulaService
       var list: Formula[] = await FormulaModel.find({});
 
       list.forEach((x) => {
-        while ((m = regex.exec(x.equation)) !== null) {
-          if (m.index === regex.lastIndex) {
-            regex.lastIndex++;
-          }
+        x.conditions.forEach((y) => {
+          while ((m = regex.exec(y)) !== null) {
+            if (m.index === regex.lastIndex) {
+              regex.lastIndex++;
+            }
 
-          m.forEach((match) => {
-            x.pairs.forEach((y) => {
-              addOrUpdateToArrayValue(indicators, match, y);
+            m.forEach((match) => {
+              x.pairs.forEach((y) => {
+                addOrUpdateToArrayValue(indicators, match, y);
+              });
             });
-          });
-        }
+          }
+        });
       });
       console.log(indicators);
 
